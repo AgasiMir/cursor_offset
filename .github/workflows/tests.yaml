@@ -46,7 +46,19 @@ jobs:
       - name: Type check with mypy
         run: uv run mypy .
 
-      - name: Prepare .env.test file
+      - name: Prepare .env.example.local file
+        run: |
+          cat > .env.local <<'EOF'
+          ENVIRONMENT=local
+          POSTGRES_USER=postgres
+          POSTGRES_PASSWORD=postgres
+          POSTGRES_DB=cursor_offset_local
+          DB_HOST=localhost
+          DB_PORT=6432
+          EOF
+          cp .env.example.local .env.local
+
+      - name: Prepare .env.example.test file
         run: |
           cat > .env.test <<'EOF'
           ENVIRONMENT=TEST
@@ -56,7 +68,7 @@ jobs:
           DB_HOST=localhost
           DB_PORT=16432
           EOF
-          cp .env.test .env
+          cp .env.example.test .env.test
 
       - name: Start DataBase
         run: docker compose up -d
