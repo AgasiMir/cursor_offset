@@ -76,5 +76,6 @@ jobs:
       - name: Run tests
         run: uv run pytest --cov=app --cov-report=term-missing
 
-      - name: Stop DataBase
+      - name: Stop Containers
+        if: always()
         run: docker compose down -v
