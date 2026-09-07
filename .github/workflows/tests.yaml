@@ -46,9 +46,9 @@ jobs:
       - name: Type check with mypy
         run: uv run mypy .
 
-      - name: Prepare .env.example.local file
+      - name: Prepare .env.local file
         run: |
-          cat > .env.local <<'EOF'
+          cat > .env.example.local <<'EOF'
           ENVIRONMENT=local
           POSTGRES_USER=postgres
           POSTGRES_PASSWORD=postgres
@@ -58,9 +58,9 @@ jobs:
           EOF
           cp .env.example.local .env.local
 
-      - name: Prepare .env.example.test file
+      - name: Prepare .env.test file
         run: |
-          cat > .env.test <<'EOF'
+          cat > .env.example.test <<'EOF'
           ENVIRONMENT=TEST
           POSTGRES_USER=postgres
           POSTGRES_PASSWORD=postgres
