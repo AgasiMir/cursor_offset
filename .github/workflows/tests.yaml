@@ -46,5 +46,14 @@ jobs:
       - name: Type check with mypy
         run: uv run mypy .
 
+      - name: Prepare .env.test file
+        run: uv run cp .env.test
+
+      - name: Start DataBase
+        run: uv run docker-compose up -d
+
       - name: Run tests
         run: uv run pytest
+
+      - name: Stop DataBase
+        run: uv run docker-compose down -v
