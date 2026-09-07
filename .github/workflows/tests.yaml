@@ -74,7 +74,7 @@ jobs:
         run: docker compose up -d
 
       - name: Run tests
-        run: uv run pytest
+        run: uv run pytest --cov=app --cov-report=term-missing
 
       - name: Stop DataBase
         run: docker compose down -v
