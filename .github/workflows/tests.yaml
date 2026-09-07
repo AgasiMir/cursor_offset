@@ -56,7 +56,7 @@ jobs:
           DB_HOST=localhost
           DB_PORT=16432
           EOF
-          cp .env.test .env.test
+          cp .env.test .env
 
       - name: Start DataBase
         run: docker compose up -d
