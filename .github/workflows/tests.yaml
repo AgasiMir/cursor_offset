@@ -74,7 +74,7 @@ jobs:
         run: docker compose up -d
 
       - name: Run tests
-        run: uv run pytest --cov=app --cov-report=html --cov-fail-under=90
+        run: uv run pytest --cov=app --cov-report=term-missing --cov-fail-under=90
 
       - name: Stop Containers
         if: always()
