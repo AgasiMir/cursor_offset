@@ -47,7 +47,7 @@ jobs:
         run: uv run mypy .
 
       - name: Prepare .env.test file
-        run: uv run cp .env.test .env.local
+        run: cp .env.test .env.local
 
       - name: Start DataBase
         run: uv run docker-compose up -d
