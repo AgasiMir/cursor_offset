@@ -47,13 +47,22 @@ jobs:
         run: uv run mypy .
 
       - name: Prepare .env.test file
-        run: cp .env.test .env.local
+        run: |
+          cat > .env.test <<'EOF'
+          ENVIRONMENT=TEST
+          POSTGRES_USER=postgres
+          POSTGRES_PASSWORD=postgres
+          POSTGRES_DB=cursor_offset_test
+          DB_HOST=localhost
+          DB_PORT=16432
+          EOF
+          cp .env.test .env.test
 
       - name: Start DataBase
-        run: uv run docker-compose up -d
+        run: docker compose up -d
 
       - name: Run tests
         run: uv run pytest
 
       - name: Stop DataBase
-        run: uv run docker-compose down -v
+        run: docker compose down -v
