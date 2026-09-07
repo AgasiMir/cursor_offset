@@ -1,0 +1,16 @@
+[run]
+omit = 
+    */cache_key_builders/*
+    */email/*
+    */tests/*
+    */migrations/*
+    *rate_limit.py*
+    */__pycache__/*
+    */.venv/*
+    */venv/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError

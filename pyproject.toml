@@ -1,0 +1,24 @@
+[project]
+name = "cursoroffset"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "alembic>=1.19.2",
+    "asyncpg>=0.31.0",
+    "fastapi-limiter>=0.2.0",
+    "fastapi[standard]>=0.141.1",
+    "loguru>=0.7.3",
+    "sqlalchemy>=2.0.52",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.3.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.1.0",
+    "pytest-dotenv>=0.5.2",
+    "ruff>=0.16.6",
+]
