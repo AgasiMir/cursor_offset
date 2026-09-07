@@ -71,7 +71,7 @@ jobs:
           cp .env.example.test .env.test
 
       - name: Start DataBase
-        run: docker compose up -d
+        run: docker compose up -d test_db
 
       - name: Run tests
         run: uv run pytest --cov=app --cov-report=term-missing --cov-fail-under=90
