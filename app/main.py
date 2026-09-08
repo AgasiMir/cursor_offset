@@ -7,7 +7,7 @@ from fastapi_cache.backends.redis import RedisBackend
 
 from app.api import routers
 from app.api.handlers import router as handlers_router
-from app.handlers.errors import register_exception_handlers
+from app.exception_handlers.errors import register_exception_handlers
 from app.init import redis_manager
 from app.middlewares.log import log_requests
 

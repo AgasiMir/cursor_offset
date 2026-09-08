@@ -2,7 +2,7 @@ from uuid import uuid4
 
 import pytest
 
-from app.exceptions.python_exceptions import PostNotFoundException
+from app.exception_handlers.python_exceptions import PostNotFoundException
 from app.schemas import (
     PostCreateSchema,
     PostPartialUpdateSchema,

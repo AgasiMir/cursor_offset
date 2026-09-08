@@ -2,7 +2,6 @@ from locust import HttpUser, between, task
 
 from app.config import settings
 
-# Перед запуском нагрузочного тестирования, нужно отключить rate limiter у ручек
 # locust -f locustfile.py --host=http://localhost:8000
 
 

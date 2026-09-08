@@ -1,10 +1,10 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.exceptions.python_exceptions import PostNotFoundException
+from app.exception_handlers.python_exceptions import PostNotFoundException
 from app.models.post import Post
 from app.schemas import (
     Cursor,
@@ -69,12 +69,20 @@ class PostRepository:
 
         result = [self._schema.model_validate(post) for post in page_rows]
 
+        total_count = await self.db.scalar(select(func.count(Post.id)).select_from(Post))
+
         if not result:
-            return PostReadSchemaWithCursor(posts=[], has_more=False, next_cursor=None)
+            return PostReadSchemaWithCursor(
+                posts=[],
+                has_more=False,
+                next_cursor=None,
+                total_count=total_count,
+            )
 
         return PostReadSchemaWithCursor(
             posts=result,
             has_more=has_more,
+            total_count=total_count,
             next_cursor=Cursor(
                 id=result[-1].id,
                 created_at=result[-1].created_at,

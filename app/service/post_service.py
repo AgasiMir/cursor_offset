@@ -48,13 +48,17 @@ class PostService:
     ) -> PostReadSchema:
         res = await self.uow.posts.partial_update_post(post_id=post_id, post=post)
 
-        # partial_update_post гарантированно возвращает PostReadSchema
-        # либо бросает PostNotFoundException, поэтому None тут невозможен.
-        pattern = f"fastapi-cache:post:{post_id}*"
-        deleted_count = await redis_manager.delete_by_pattern(pattern)
-        logger.info(f"Удалено ключей кэша для продукта {post_id}: {deleted_count}")
+        key = f"fastapi-cache:post:{post_id}"
+        deleted_count = await redis_manager.delete(key)
+        logger.info(f"Удален ключ кэша для поста {post_id}: {deleted_count}")
 
         return res
 
     async def delete_post(self, post_id: UUID) -> dict:
-        return await self.uow.posts.delete_post(post_id)
+        res = await self.uow.posts.delete_post(post_id)
+
+        key = f"fastapi-cache:post:{post_id}"
+        deleted_count = await redis_manager.delete(key)
+        logger.info(f"Удален ключ кэша для поста {post_id}: {deleted_count}")
+
+        return res

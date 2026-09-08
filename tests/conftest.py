@@ -10,6 +10,9 @@ import pytest
 mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 
 
+# Мок для redis_manager.delete_by_pattern - отключает вызовы Redis в тестах
+mock.patch("app.init.redis_manager.delete_by_pattern", mock.AsyncMock(return_value=None)).start()
+
 from httpx import ASGITransport, AsyncClient
 
 from app.api.dependencies import get_db
