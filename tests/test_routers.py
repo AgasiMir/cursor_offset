@@ -30,7 +30,7 @@ async def test_get_posts_by_offset_with_no_posts(async_client):
 async def test_get_posts_by_cursor(async_client):
     res = await async_client.get(
         "/v1/posts/cursor",
-        params={"page": 1, "page_size": 4},
+        params={"limit": 4},
     )
     assert res.status_code == 200
     assert res.json().get("has_more") is True
@@ -40,7 +40,7 @@ async def test_get_posts_by_cursor(async_client):
 async def test_get_posts_by_cursor_with_has_more_is_false(async_client):
     res = await async_client.get(
         "/v1/posts/cursor",
-        params={"page": 1, "page_size": 5},
+        params={"limit": 5},
     )
     assert res.status_code == 200
     assert res.json().get("has_more") is False
