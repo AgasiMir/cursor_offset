@@ -2,8 +2,14 @@
 
 import json
 from collections.abc import AsyncGenerator
+from unittest import mock
 
 import pytest
+
+# Мок для fastapi_cache - отключает кэширование в тестах
+mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
+
+
 from httpx import ASGITransport, AsyncClient
 
 from app.api.dependencies import get_db
