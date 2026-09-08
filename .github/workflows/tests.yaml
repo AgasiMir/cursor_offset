@@ -61,6 +61,9 @@ jobs:
       - name: Prepare .env.test file
         run: cp .env.example.test .env.test
 
+      - name: Prepare .env.locust file
+        run: cp .env.example.locust .env.locust
+
       - name: Start DataBase
         run: docker compose up -d test_db
 
@@ -69,4 +72,4 @@ jobs:
 
       - name: Stop Containers
         if: always()
-        run: docker compose down test_db -v
+        run: docker compose down -v
