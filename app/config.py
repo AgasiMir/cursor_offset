@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     DB_PORT: int = 5432
     POSTGRES_DB: str = "cursor_offset"
 
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+
     @property
     def DB_URL(self) -> str:
         return (
