@@ -27,16 +27,18 @@ if settings.ENVIRONMENT != "TEST":
 router = APIRouter(
     prefix="/v1/posts",
     tags=["posts 📫📬📭"],
-    # dependencies=_dependencies,
+    dependencies=_dependencies,
 )
 
 
 @router.get("/offset", response_model=PostReadSchemaWithPagination)
+@cache(expire=randint(28, 32))
 async def get_posts_offset(posts: PostServiceDep, pagination: PaginationDep):
     return await posts.get_posts_with_offset(pagination=pagination)
 
 
 @router.get("/cursor", response_model=PostReadSchemaWithCursor)
+@cache(expire=randint(28, 32))
 async def get_post_cursor(
     posts: PostServiceDep,
     pagination: PaginationDep,
