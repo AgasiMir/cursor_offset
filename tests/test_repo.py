@@ -14,7 +14,7 @@ from app.uow import UnitOfWork
 
 
 async def test_get_posts_by_offset(db: UnitOfWork):
-    res = await db.posts.get_posts_with_offset(0, 5)
+    res = await db.posts.get_posts_with_offset(1, 0, 5)
     assert len(res.model_dump()["posts"]) == res.model_dump()["posts_on_page"] == 5
     assert isinstance(res, PostReadSchemaWithPagination)
 
@@ -44,7 +44,7 @@ async def test_get_posts_by_cursor_with_no_result(db: UnitOfWork):
 
 
 async def test_get_post_by_uuid(db: UnitOfWork):
-    paginated = await db.posts.get_posts_with_offset(0, 5)
+    paginated = await db.posts.get_posts_with_offset(1, 0, 5)
     post_uuid = paginated.model_dump()["posts"][0]["id"]
 
     post = await db.posts.get_post(post_uuid)
@@ -68,7 +68,7 @@ async def test_post_create(db: UnitOfWork):
 
 
 async def test_post_partial_update(db: UnitOfWork):
-    paginated = await db.posts.get_posts_with_offset(0, 5)
+    paginated = await db.posts.get_posts_with_offset(1, 0, 5)
     post_uuid = paginated.model_dump()["posts"][0]["id"]
 
     post = await db.posts.get_post(post_uuid)
@@ -89,7 +89,7 @@ async def test_not_existingpost_partial_update(db: UnitOfWork):
 
 
 async def test_post_delete(db: UnitOfWork):
-    paginated = await db.posts.get_posts_with_offset(0, 5)
+    paginated = await db.posts.get_posts_with_offset(1, 0, 5)
     post_uuid = paginated.model_dump()["posts"][0]["id"]
 
     await db.posts.delete_post(post_uuid)

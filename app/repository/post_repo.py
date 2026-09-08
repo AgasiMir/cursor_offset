@@ -23,7 +23,12 @@ class PostRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_posts_with_offset(self, offset: int, limit: int) -> PostReadSchemaWithPagination:
+    async def get_posts_with_offset(
+        self,
+        page: int,
+        offset: int,
+        limit: int,
+    ) -> PostReadSchemaWithPagination:
         posts = await self.db.scalars(
             select(Post).order_by(Post.created_at.desc()).limit(limit).offset(offset),
         )
@@ -32,7 +37,7 @@ class PostRepository:
         return PostReadSchemaWithPagination(
             posts=result,
             posts_on_page=len(result),
-            pagination=Pagination(page=offset + 1, page_size=limit),
+            pagination=Pagination(page=page, page_size=limit),
         )
 
     async def get_posts_with_cursor(

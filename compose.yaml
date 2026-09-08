@@ -1,18 +1,4 @@
 services:
- 
-  # marketplace:
-  #   build: .
-  #   container_name: marketplace_app
-  #   env_file: .env.prod
-  #   ports:
-  #     - "8000:8000"
-  #   networks:
-  #     - marketplace_network
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   restart: unless-stopped
-  #   command: bash -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4"
 
   postgres:
       image: postgres:17
@@ -39,10 +25,22 @@ services:
         .env.test
       ports:
         - "16432:5432"  
-      # volumes:
-      #   - cursor_offset_data:/var/lib/postgresql/data
-      # networks:
-      #   - marketplace_network
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} || exit 1"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      restart: unless-stopped
+
+  locust:
+      image: postgres:17
+      container_name: locust_db
+      env_file: 
+        .env.locust
+      ports:
+        - "26432:5432"  
+      volumes:
+        - locust_db_data:/var/lib/postgresql/data
       healthcheck:
         test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} || exit 1"]
         interval: 10s
@@ -53,3 +51,4 @@ services:
 
 volumes:
   cursor_offset_data:
+  locust_db_data:

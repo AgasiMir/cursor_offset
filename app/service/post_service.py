@@ -21,7 +21,7 @@ class PostService:
         limit = pagination.page_size
         offset = (page - 1) * limit
 
-        return await self.uow.posts.get_posts_with_offset(offset=offset, limit=limit)
+        return await self.uow.posts.get_posts_with_offset(page=page, offset=offset, limit=limit)
 
     async def get_posts_with_cursor(
         self,

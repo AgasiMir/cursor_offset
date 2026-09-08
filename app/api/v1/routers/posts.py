@@ -22,7 +22,11 @@ _dependencies: list = []
 if settings.ENVIRONMENT != "TEST":
     _dependencies.append(Depends(RateLimiter(limiter=Limiter(Rate(5, Duration.SECOND * 2)))))
 
-router = APIRouter(prefix="/v1/posts", tags=["posts 📫📬📭"], dependencies=_dependencies)
+router = APIRouter(
+    prefix="/v1/posts",
+    tags=["posts 📫📬📭"],
+    # dependencies=_dependencies,
+)
 
 
 @router.get("/offset", response_model=PostReadSchemaWithPagination)

@@ -47,7 +47,7 @@ async def test_get_posts_by_cursor_with_has_more_is_false(async_client):
 
 
 async def test_get_post_by_uuid(async_client, db: UnitOfWork):
-    paginated = await db.posts.get_posts_with_offset(0, 5)
+    paginated = await db.posts.get_posts_with_offset(1, 0, 5)
     post_id = paginated.model_dump()["posts"][0]["id"]
 
     res = await async_client.get(
@@ -76,7 +76,7 @@ async def test_create_post(async_client):
 
 
 async def test_partial_update_post(async_client, db: UnitOfWork):
-    paginated = await db.posts.get_posts_with_offset(0, 5)
+    paginated = await db.posts.get_posts_with_offset(1, 0, 5)
     post_id = paginated.model_dump()["posts"][0]["id"]
 
     res = await async_client.patch(
@@ -99,7 +99,7 @@ async def test_partial_update_not_existing_post(async_client, db: UnitOfWork):
 
 
 async def test_delete_post(async_client, db: UnitOfWork):
-    paginated = await db.posts.get_posts_with_offset(0, 5)
+    paginated = await db.posts.get_posts_with_offset(1, 0, 5)
     post_id = paginated.model_dump()["posts"][0]["id"]
 
     res = await async_client.delete(f"/v1/posts/{post_id}")
