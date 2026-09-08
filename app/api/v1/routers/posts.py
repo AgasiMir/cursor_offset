@@ -7,7 +7,7 @@ from pyrate_limiter import Duration, Limiter, Rate
 
 from app.api.dependencies import PaginationDep, PostServiceDep
 from app.api.rate_limit import RateLimiter
-from app.cache_key_builders import post_key_builder
+from app.cache_key_builders import post_key_builder, post_list_key_builder
 from app.config import settings
 from app.exception_handlers.schemas import ErrorResponse
 from app.schemas import (
@@ -32,6 +32,7 @@ router = APIRouter(
 
 
 @router.get("/offset", response_model=PostReadSchemaWithPagination)
+@cache(expire=30, namespace="post_list", key_builder=post_list_key_builder)
 async def get_posts_offset(posts: PostServiceDep, pagination: PaginationDep):
     return await posts.get_posts_with_offset(pagination=pagination)
 
