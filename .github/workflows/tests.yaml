@@ -59,16 +59,7 @@ jobs:
           cp .env.example.local .env.local
 
       - name: Prepare .env.test file
-        run: |
-          cat > .env.example.test <<'EOF'
-          ENVIRONMENT=TEST
-          POSTGRES_USER=postgres
-          POSTGRES_PASSWORD=postgres
-          POSTGRES_DB=cursor_offset_test
-          DB_HOST=localhost
-          DB_PORT=16432
-          EOF
-          cp .env.example.test .env.test
+        run: cp .env.example.test .env.test
 
       - name: Start DataBase
         run: docker compose up -d test_db
