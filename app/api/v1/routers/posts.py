@@ -38,6 +38,7 @@ async def get_posts_offset(posts: PostServiceDep, pagination: PaginationDep):
 
 
 @router.get("/cursor", response_model=PostReadSchemaWithCursor)
+@cache(expire=30, namespace="post_list_cursor", key_builder=post_list_key_builder)
 async def get_post_cursor(
     posts: PostServiceDep,
     pagination: PaginationDep,
