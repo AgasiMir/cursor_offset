@@ -14,10 +14,11 @@ def post_key_builder(
     fastapi-cache:post:<post_uuid>
     """
 
-    data = kwargs.get("kwargs")
-    if not isinstance(data, dict):
-        return f"{namespace}:"
+    item_id = None
+    if request is not None:
+        item_id = request.path_params.get("post_uuid")
 
-    post_uuid = data.get("post_uuid")
+    if item_id is None:
+        item_id = kwargs.get("post_uuid") or (args[0] if args else None)
 
-    return f"{namespace}:{post_uuid}"
+    return f"{namespace}:{item_id}"
