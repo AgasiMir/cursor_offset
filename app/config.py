@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    ENVIRONMENT: Literal["LOCAL", "TEST", "DEV", "PROD"] = "LOCAL"
+    ENVIRONMENT: Literal["LOCAL", "LOCUST", "TEST", "DEV", "PROD"] = "LOCAL"
 
     DB_DRIVER: str = "postgresql+asyncpg"
     POSTGRES_USER: str = "postgres"
