@@ -1,6 +1,8 @@
 from datetime import datetime
 from uuid import UUID
 
+from app.init import redis_manager
+from app.middlewares.log import logger
 from app.schemas import (
     PostCreateSchema,
     PostPartialUpdateSchema,
@@ -44,7 +46,19 @@ class PostService:
     async def partial_update_post(
         self, post_id: UUID, post: PostPartialUpdateSchema
     ) -> PostReadSchema:
-        return await self.uow.posts.partial_update_post(post_id=post_id, post=post)
+        res = await self.uow.posts.partial_update_post(post_id=post_id, post=post)
+
+        key = f"fastapi-cache:post:{post_id}"
+        deleted_count = await redis_manager.delete(key)
+        logger.info(f"Удален ключ кэша для поста {post_id}: {deleted_count}")
+
+        return res
 
     async def delete_post(self, post_id: UUID) -> dict:
-        return await self.uow.posts.delete_post(post_id)
+        res = await self.uow.posts.delete_post(post_id)
+
+        key = f"fastapi-cache:post:{post_id}"
+        deleted_count = await redis_manager.delete(key)
+        logger.info(f"Удален ключ кэша для поста {post_id}: {deleted_count}")
+
+        return res

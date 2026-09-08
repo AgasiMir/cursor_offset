@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    ENVIRONMENT: Literal["LOCAL", "TEST", "DEV", "PROD"] = "LOCAL"
+    ENVIRONMENT: Literal["LOCAL", "LOCUST", "TEST", "DEV", "PROD"] = "LOCAL"
 
     DB_DRIVER: str = "postgresql+asyncpg"
     POSTGRES_USER: str = "postgres"
@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     DB_HOST: str = "localhost"
     DB_PORT: int = 5432
     POSTGRES_DB: str = "cursor_offset"
+
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
 
     @property
     def DB_URL(self) -> str:
@@ -22,7 +25,7 @@ class Settings(BaseSettings):
             f"{self.DB_PORT}/{self.POSTGRES_DB}"
         )
 
-    model_config = SettingsConfigDict(env_file=".env.local")
+    model_config = SettingsConfigDict(env_file=".env.locust")
 
 
 settings = Settings()

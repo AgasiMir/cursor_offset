@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
-from app.exceptions.python_exceptions import PostNotFoundException
-from app.handlers.schemas import ErrorResponse
+from app.exception_handlers.python_exceptions import PostNotFoundException
+from app.exception_handlers.schemas import ErrorResponse
 
 
 def build_error_response(error: str, message: str, status_code: int) -> JSONResponse:

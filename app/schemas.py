@@ -28,6 +28,7 @@ class Cursor(BaseModel):
 
 class PostReadSchemaWithCursor(BaseModel):
     posts: list[PostReadSchema]
+    total_count: int | None = Field(description="Общее количество постов")
     has_more: bool
     next_cursor: Cursor | None = None
 
