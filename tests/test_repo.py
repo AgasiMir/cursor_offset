@@ -3,28 +3,44 @@ from uuid import uuid4
 import pytest
 
 from app.exceptions.python_exceptions import PostNotFoundException
-from app.schemas import PostCreateSchema, PostPartialUpdateSchema, PostReadSchema
+from app.schemas import (
+    PostCreateSchema,
+    PostPartialUpdateSchema,
+    PostReadSchema,
+    PostReadSchemaWithCursor,
+    PostReadSchemaWithPagination,
+)
 from app.uow import UnitOfWork
 
 
 async def test_get_posts_by_offset(db: UnitOfWork):
     res = await db.posts.get_posts_with_offset(0, 5)
     assert len(res.model_dump()["posts"]) == res.model_dump()["posts_on_page"] == 5
+    assert isinstance(res, PostReadSchemaWithPagination)
+
+    post = res.model_dump()["posts"][0]
+    assert isinstance(PostReadSchema(**post), PostReadSchema)
 
 
 async def test_get_posts_by_cursor(db: UnitOfWork):
     res = await db.posts.get_posts_with_cursor(4)
     assert res.model_dump()["has_more"] is True
 
+    assert isinstance(res, PostReadSchemaWithCursor)
+
 
 async def test_get_posts_by_cursor_with_no_has_more(db: UnitOfWork):
     res = await db.posts.get_posts_with_cursor(6)
     assert res.model_dump()["has_more"] is False
 
+    assert isinstance(res, PostReadSchemaWithCursor)
+
 
 async def test_get_posts_by_cursor_with_no_result(db: UnitOfWork):
     res = await db.posts.get_posts_with_cursor(0)
     assert res.model_dump()["next_cursor"] is None
+
+    assert isinstance(res, PostReadSchemaWithCursor)
 
 
 async def test_get_post_by_uuid(db: UnitOfWork):
@@ -33,6 +49,8 @@ async def test_get_post_by_uuid(db: UnitOfWork):
 
     post = await db.posts.get_post(post_uuid)
     assert post.model_dump()["id"] == post_uuid
+
+    assert isinstance(post, PostReadSchema)
 
 
 async def test_get_not_existingpost_by_uuid(db: UnitOfWork):
@@ -58,6 +76,8 @@ async def test_post_partial_update(db: UnitOfWork):
 
     res = await db.posts.partial_update_post(post.id, updated_post)
     assert res.model_dump()["title"] == "test_updated"
+
+    assert isinstance(res, PostReadSchema)
 
 
 async def test_not_existingpost_partial_update(db: UnitOfWork):

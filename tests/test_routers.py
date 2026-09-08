@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from app.schemas import PostReadSchema, PostReadSchemaWithCursor, PostReadSchemaWithPagination
 from app.uow import UnitOfWork
 
 
@@ -23,6 +24,7 @@ async def test_get_posts_by_offset_with_no_posts(async_client):
     )
     assert res.status_code == 200
     assert res.json().get("posts") == []
+    assert isinstance(PostReadSchemaWithPagination(**res.json()), PostReadSchemaWithPagination)
 
 
 async def test_get_posts_by_cursor(async_client):
@@ -32,6 +34,7 @@ async def test_get_posts_by_cursor(async_client):
     )
     assert res.status_code == 200
     assert res.json().get("has_more") is True
+    assert isinstance(PostReadSchemaWithCursor(**res.json()), PostReadSchemaWithCursor)
 
 
 async def test_get_posts_by_cursor_with_has_more_is_false(async_client):
@@ -69,6 +72,7 @@ async def test_create_post(async_client):
         json={"title": "Test Post", "content": "Test Content"},
     )
     assert res.status_code == 201
+    assert isinstance(PostReadSchema(**res.json()), PostReadSchema)
 
 
 async def test_partial_update_post(async_client, db: UnitOfWork):

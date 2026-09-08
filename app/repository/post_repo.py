@@ -18,18 +18,16 @@ from app.utils.pagination import Pagination
 
 
 class PostRepository:
+    _schema: type[PostReadSchema] = PostReadSchema
+
     def __init__(self, db: AsyncSession):
         self.db = db
-
-    @staticmethod
-    async def _model_to_schema(model: Post) -> PostReadSchema:
-        return PostReadSchema.model_validate(model)
 
     async def get_posts_with_offset(self, offset: int, limit: int) -> PostReadSchemaWithPagination:
         posts = await self.db.scalars(
             select(Post).order_by(Post.created_at.desc()).limit(limit).offset(offset),
         )
-        result = [await self._model_to_schema(post) for post in posts.all()]
+        result = [self._schema.model_validate(post) for post in posts.all()]
 
         return PostReadSchemaWithPagination(
             posts=result,
@@ -64,7 +62,7 @@ class PostRepository:
         has_more = len(rows) > limit  # есть ли запись за пределами страницы
         page_rows = rows[:limit]  # отрезаем лишнюю "смотрящую" запись
 
-        result = [await self._model_to_schema(post) for post in page_rows]
+        result = [self._schema.model_validate(post) for post in page_rows]
 
         if not result:
             return PostReadSchemaWithCursor(posts=[], has_more=False, next_cursor=None)
@@ -84,7 +82,7 @@ class PostRepository:
         if not post:
             raise PostNotFoundException
 
-        return await self._model_to_schema(post)
+        return self._schema.model_validate(post)
 
     async def create_post(self, post: PostCreateSchema) -> PostReadSchema:
         db_post = Post(**post.model_dump())
@@ -92,7 +90,7 @@ class PostRepository:
         self.db.add(db_post)
         await self.db.flush()
 
-        return await self._model_to_schema(db_post)
+        return self._schema.model_validate(db_post)
 
     async def bulk_create_posts(self, posts: list[dict[str, str]]) -> list[PostReadSchema]:
         db_posts = [Post(**post) for post in posts]
@@ -100,7 +98,7 @@ class PostRepository:
         self.db.add_all(db_posts)
         await self.db.flush()
 
-        return [await self._model_to_schema(post) for post in db_posts]
+        return [self._schema.model_validate(post) for post in db_posts]
 
     async def partial_update_post(
         self, post_id: UUID, post: PostPartialUpdateSchema
@@ -115,7 +113,7 @@ class PostRepository:
 
         await self.db.flush()
 
-        return await self._model_to_schema(db_post)
+        return self._schema.model_validate(db_post)
 
     async def delete_post(self, post_id: UUID) -> dict:
         db_post = await self.db.get(Post, post_id)
