@@ -12,7 +12,8 @@
             "module": "uvicorn",
             "args": [
                 "app.main:app",
-                "--reload"
+                "--reload",
+                // "--workers=4"
             ],
             "jinja": true
         }
