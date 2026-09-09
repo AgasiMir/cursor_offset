@@ -26,16 +26,9 @@ class TestRedisManager:
         # Подготовка: мокаем ping и возвращаем успех
         mock_instance = AsyncMock()
         mock_instance.ping.return_value = "PONG"
-        # Делаем mock_redis вызываемым и возвращающим mock_instance
+        # В connect() вызов redis.Redis(...) синхронный, поэтому return_value
+        # достаточно — он вернёт mock_instance вместо реального клиента.
         mock_redis.return_value = mock_instance
-
-        # Также делаем mock_redis awaitable, чтобы await redis.Redis(...) работал
-        # Для этого используем side_effect, который возвращает mock_instance
-        # и делает mock_redis вызываемым как асинхронная функция
-        async def async_constructor(*args, **kwargs):
-            return mock_instance
-
-        mock_redis.side_effect = async_constructor
 
         # Действие
         await redis_manager.connect()

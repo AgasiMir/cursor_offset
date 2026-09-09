@@ -25,7 +25,7 @@ class Settings(BaseSettings):
             f"{self.DB_PORT}/{self.POSTGRES_DB}"
         )
 
-    model_config = SettingsConfigDict(env_file=".env.locust")
+    model_config = SettingsConfigDict(env_file=".env.local")
 
 
 settings = Settings()

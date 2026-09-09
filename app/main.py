@@ -15,7 +15,8 @@ from app.middlewares.log import log_requests
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     await redis_manager.connect()
-    assert redis_manager.redis is not None
+    if redis_manager.redis is None:
+        raise RuntimeError("Не удалось подключиться к Redis")
     FastAPICache.init(RedisBackend(redis_manager.redis), prefix="fastapi-cache")
     try:
         yield

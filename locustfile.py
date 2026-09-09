@@ -2,6 +2,8 @@ from locust import HttpUser, between, task
 
 from app.config import settings
 
+# нужно еще поэеспериментировать
+
 # locust -f locustfile.py --host=http://localhost:8000
 
 
