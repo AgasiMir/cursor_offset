@@ -41,12 +41,12 @@ async def get_posts_offset(posts: PostServiceDep, pagination: PaginationDep):
 @cache(expire=30, namespace="post_list_cursor", key_builder=post_list_key_builder)
 async def get_post_cursor(
     posts: PostServiceDep,
-    pagination: PaginationDep,
+    limit: int,
     created_at: datetime | None = None,
     cursor_id: uuid.UUID | None = None,
 ):
     return await posts.get_posts_with_cursor(
-        limit=pagination.page_size,
+        limit=limit,
         created_at=created_at,
         cursor_id=cursor_id,
     )

@@ -34,9 +34,12 @@ class PostRepository:
         )
         result = [self._schema.model_validate(post) for post in posts.all()]
 
+        total_count = await self.db.scalar(select(func.count(Post.id)).select_from(Post))
+
         return PostReadSchemaWithPagination(
             posts=result,
             posts_on_page=len(result),
+            total_count=total_count,
             pagination=Pagination(page=page, page_size=limit),
         )
 
