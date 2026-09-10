@@ -16,9 +16,7 @@ async def override_db():
 
 async def main():
     app.dependency_overrides[get_db] = override_db
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as c:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
         r = await c.get("/v1/posts/offset", params={"page": 1, "page_size": 5})
         print("STATUS:", r.status_code)
         print(json.dumps(r.json(), indent=2))
