@@ -5,12 +5,13 @@ from fastapi import APIRouter, Depends, status
 from fastapi_cache.decorator import cache
 from pyrate_limiter import Duration, Limiter, Rate
 
-from app.api.dependencies import PaginationDep, PostServiceDep
+from app.api.dependencies import PostServiceDep, PaginationDep
 from app.api.rate_limit import RateLimiter
 from app.cache_key_builders import post_key_builder, post_list_key_builder
 from app.config import settings
 from app.exception_handlers.schemas import ErrorResponse
 from app.schemas import (
+    Pagination,
     PostCreateSchema,
     PostPartialUpdateSchema,
     PostReadSchema,

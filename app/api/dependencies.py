@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import Depends
 
 from app.core.database import async_session
+from app.schemas import Pagination
 from app.service.post_service import PostService
 from app.uow import UnitOfWork
-from app.utils.pagination import Pagination
 
 
 async def get_db():

@@ -6,15 +6,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.exception_handlers.python_exceptions import PostNotFoundException
 from app.models.post import Post
+
+# from app.utils.pagination import Pagination
 from app.schemas import (
     Cursor,
+    Pagination,
     PostCreateSchema,
     PostPartialUpdateSchema,
     PostReadSchema,
     PostReadSchemaWithCursor,
     PostReadSchemaWithPagination,
 )
-from app.utils.pagination import Pagination
 
 
 class PostRepository:
