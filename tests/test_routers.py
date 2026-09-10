@@ -103,8 +103,10 @@ async def test_delete_post(async_client, db: UnitOfWork):
     post_id = paginated.model_dump()["posts"][0]["id"]
 
     res = await async_client.delete(f"/v1/posts/{post_id}")
-    assert res.status_code == 200
-    assert res.json() == {"message": "Post deleted."}
+    assert res.status_code == 204
+
+    res = await async_client.get(f"/v1/posts/{post_id}")
+    assert res.status_code == 404
 
 
 async def test_delete_not_existing_post(async_client):

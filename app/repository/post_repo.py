@@ -124,12 +124,11 @@ class PostRepository:
 
         return self._schema.model_validate(db_post)
 
-    async def delete_post(self, post_id: UUID) -> dict:
+    async def delete_post(self, post_id: UUID) -> None:
         db_post = await self.db.get(Post, post_id)
 
         if not db_post:
             raise PostNotFoundException
 
         await self.db.delete(db_post)
-
-        return {"message": "Post deleted."}
+        await self.db.flush()

@@ -54,11 +54,9 @@ class PostService:
 
         return res
 
-    async def delete_post(self, post_id: UUID) -> dict:
-        res = await self.uow.posts.delete_post(post_id)
+    async def delete_post(self, post_id: UUID) -> None:
+        await self.uow.posts.delete_post(post_id)
 
         key = f"fastapi-cache:post:{post_id}"
         deleted_count = await redis_manager.delete(key)
         logger.info(f"Удален ключ кэша для поста {post_id}: {deleted_count}")
-
-        return res

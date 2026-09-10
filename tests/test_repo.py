@@ -101,6 +101,9 @@ async def test_post_delete(db: UnitOfWork):
 
     await db.posts.delete_post(post_uuid)
 
+    with pytest.raises(PostNotFoundException):
+        await db.posts.get_post(post_uuid)
+
 
 async def test_not_existing_post_delete(db: UnitOfWork):
     post_uuid = uuid4()
