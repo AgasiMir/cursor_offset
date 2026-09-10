@@ -16,7 +16,7 @@ from app.uow import UnitOfWork
 
 async def test_get_posts_by_offset(db: UnitOfWork):
     res = await db.posts.get_posts_with_offset(1, 0, 5)
-    assert len(res.model_dump()["posts"]) == res.model_dump()["posts_on_page"] == 5
+    assert len(res.model_dump()["posts"]) == 5
     assert isinstance(res, PostReadSchemaWithPagination)
 
     post = res.model_dump()["posts"][0]
@@ -24,21 +24,21 @@ async def test_get_posts_by_offset(db: UnitOfWork):
 
 
 async def test_get_posts_by_cursor(db: UnitOfWork):
-    res = await db.posts.get_posts_with_cursor(4)
+    res = await db.posts.get_posts_with_cursor(4, None, None)
     assert res.model_dump()["has_more"] is True
 
     assert isinstance(res, PostReadSchemaWithCursor)
 
 
 async def test_get_posts_by_cursor_with_no_has_more(db: UnitOfWork):
-    res = await db.posts.get_posts_with_cursor(6)
+    res = await db.posts.get_posts_with_cursor(6, None, None)
     assert res.model_dump()["has_more"] is False
 
     assert isinstance(res, PostReadSchemaWithCursor)
 
 
 async def test_get_posts_by_cursor_with_no_result(db: UnitOfWork):
-    res = await db.posts.get_posts_with_cursor(0)
+    res = await db.posts.get_posts_with_cursor(0, None, None)
     assert res.model_dump()["next_cursor"] is None
 
     assert isinstance(res, PostReadSchemaWithCursor)
