@@ -11,8 +11,12 @@ mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f)
 
 
 # Мок для redis_manager.delete - отключает вызовы Redis в тестах
-mock.patch("app.utils.cache_invalidation.redis_manager.delete", mock.AsyncMock(return_value=None)).start()
+mock.patch(
+    "app.utils.cache_invalidation.redis_manager.delete", mock.AsyncMock(return_value=None)
+).start()  # noqa
 
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 from httpx import ASGITransport, AsyncClient
 
 from app.api.dependencies import get_db
@@ -22,6 +26,13 @@ from app.main import app
 from app.models.post import Post
 from app.schemas import PostCreateSchema
 from app.uow import UnitOfWork
+
+# Инициализация FastAPICache без Redis (in-memory backend).
+# Нужно, чтобы FastAPICache.get_prefix() не падал с "You must call init first!"
+# в delete_cache_key. Lifespan приложения не запускается под ASGITransport,
+# поэтому prod-инициализация из main.py здесь не выполняется.
+# Сам кэш-декоратор отключён моком выше, так что реального кэширования не будет.
+FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
 
 
 @pytest.fixture(autouse=True, scope="session")
