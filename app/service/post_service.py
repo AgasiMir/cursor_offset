@@ -47,11 +47,11 @@ class PostService:
     ) -> PostReadSchema:
         res = await self.uow.posts.partial_update_post(post_id=post_id, post=post)
 
-        await delete_cache_key(post_id=post_id)
+        await delete_cache_key(post_id=post_id, entity_name="post")
 
         return res
 
     async def delete_post(self, post_id: UUID) -> None:
         await self.uow.posts.delete_post(post_id)
 
-        await delete_cache_key(post_id=post_id)
+        await delete_cache_key(post_id=post_id, entity_name="post")
