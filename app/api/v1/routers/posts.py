@@ -92,6 +92,7 @@ async def update_post(posts: PostServiceDep, post_uuid: uuid.UUID, post: PostPar
 
 @router.delete(
     "/{post_uuid}",
+    status_code=status.HTTP_204_NO_CONTENT,
     summary="Delete post by uuid",
     description="Deletes a post by uuid.",
     responses={
