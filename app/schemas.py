@@ -18,7 +18,6 @@ class PostReadSchema(BaseModel):
 class PostReadSchemaWithPagination(BaseModel):
     posts: list[PostReadSchema]
     posts_on_page: int = Field(description="Количество постов на возвращённой странице")
-    total_count: int | None = Field(description="Общее количество постов")
     pagination: Pagination
 
 
@@ -29,7 +28,6 @@ class Cursor(BaseModel):
 
 class PostReadSchemaWithCursor(BaseModel):
     posts: list[PostReadSchema]
-    total_count: int | None = Field(description="Общее количество постов")
     has_more: bool
     next_cursor: Cursor | None = None
 

@@ -123,7 +123,7 @@ async def setup_database(check_test_mode):
         posts = json.load(file_posts)
 
     async with UnitOfWork(session_factory=async_session_null_pool) as db_:
-        await db_.posts.bulk_create_posts(posts)
+        await db_.posts.bulk_create_posts([PostCreateSchema(**post) for post in posts])
 
 
 @pytest.fixture(scope="session")
