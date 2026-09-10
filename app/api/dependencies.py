@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import Depends
 
 from app.core.database import async_session
-from app.schemas import Pagination
+from app.schemas import CursorPaginationSchema, Pagination
 from app.service.post_service import PostService
 from app.uow import UnitOfWork
 
@@ -15,6 +15,7 @@ async def get_db():
 
 DBDep = Annotated[UnitOfWork, Depends(get_db)]
 PaginationDep = Annotated[Pagination, Depends()]
+CursorPaginationDep = Annotated[CursorPaginationSchema, Depends()]
 
 
 async def get_post_service(uow: DBDep) -> PostService:
