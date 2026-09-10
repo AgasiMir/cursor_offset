@@ -6,10 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.exception_handlers.python_exceptions import PostNotFoundException
 from app.models.post import Post
-
-# from app.utils.pagination import Pagination
 from app.schemas import (
-    Cursor,
+    CursorReadSchema,
     Pagination,
     PostCreateSchema,
     PostPartialUpdateSchema,
@@ -38,15 +36,11 @@ class PostRepository:
 
         return PostReadSchemaWithPagination(
             posts=result,
-            posts_on_page=len(result),
             pagination=Pagination(page=page, page_size=limit),
         )
 
     async def get_posts_with_cursor(
-        self,
-        limit: int,
-        cursor_id: UUID | None = None,
-        created_at: datetime | None = None,
+        self, limit: int, cursor_id: UUID | None, created_at: datetime | None
     ) -> PostReadSchemaWithCursor:
         # запрашиваем на одну запись больше, чтобы понять, есть ли следующая страница
         stmt = select(Post).order_by(Post.created_at.desc(), Post.id.desc()).limit(limit + 1)
@@ -81,9 +75,9 @@ class PostRepository:
         return PostReadSchemaWithCursor(
             posts=result,
             has_more=has_more,
-            next_cursor=Cursor(
-                id=result[-1].id,
-                created_at=result[-1].created_at,
+            next_cursor=CursorReadSchema(
+                last_id=result[-1].id,
+                last_created_at=result[-1].created_at,
             ),
         )
 

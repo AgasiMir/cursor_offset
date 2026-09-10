@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 from pydantic import ValidationError
 from pytest import mark, param, raises
 
-from app.schemas import Pagination, PostCreateSchema, PostReadSchema
+from app.schemas import CursorPaginationSchema, Pagination, PostCreateSchema, PostReadSchema
 
 
 @mark.parametrize(
@@ -90,6 +90,10 @@ async def test_post_read(
     [
         param("post number: 1", None, does_not_raise(), id="correct_title"),
         param("post number: 2", "Post_Content", does_not_raise(), id="correct_title_and_content"),
+        param("1234" * 30, "Post_Content", does_not_raise(), id="max_length_title"),
+        param("1", "Post_Content", does_not_raise(), id="min_length_title"),
+        param("", "Post_Content", raises(ValidationError), id="too_short_title"),
+        param("1234" * 31, None, raises(ValidationError), id="too_long_title"),
         param([], "Post_Content", raises(ValidationError), id="list_as_title"),
         param(None, "Post_Content", raises(ValidationError), id="none_as_title"),
         param([], {}, raises(ValidationError), id="incorrect_title_and_content"),
@@ -117,3 +121,38 @@ async def test_post_create(title: str, content: str | None, exc: AbstractContext
 async def test_pagination(page: int, page_size: int, exc: AbstractContextManager[object]):
     with exc:
         Pagination(page=page, page_size=page_size)
+
+
+@mark.parametrize(
+    "limit, cursor_id, created_at, exc",
+    [
+        param(5, None, None, does_not_raise(), id="correct_limit_and_cursor_id_and_created_at"),
+        param(5, uuid4(), datetime.now(), does_not_raise(), id="correct_request"),
+        param(1, uuid4(), datetime.now(), does_not_raise(), id="limit_at_min"),
+        param(50, uuid4(), datetime.now(), does_not_raise(), id="limit_at_max"),
+        param(0, uuid4(), datetime.now(), raises(ValidationError), id="limit_less_than_min"),
+        param(51, uuid4(), datetime.now(), raises(ValidationError), id="limit_more_than_max"),
+        param(
+            5,
+            uuid4(),
+            None,
+            raises(ValidationError),
+            id="created_at_is_none_while_cursor_id_is_not_none",
+        ),
+        param(
+            5,
+            None,
+            datetime.now(),
+            raises(ValidationError),
+            id="cursor_id_is_none_while_created_at_is_not_none",
+        ),
+    ],
+)
+async def test_cursor_pagination(
+    limit: int,
+    cursor_id: UUID | None,
+    created_at: datetime | None,
+    exc: AbstractContextManager[object],
+):
+    with exc:
+        CursorPaginationSchema(limit=limit, cursor_id=cursor_id, created_at=created_at)

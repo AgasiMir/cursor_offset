@@ -1,11 +1,10 @@
 import uuid
-from datetime import datetime
 
 from fastapi import APIRouter, Depends, status
 from fastapi_cache.decorator import cache
 from pyrate_limiter import Duration, Limiter, Rate
 
-from app.api.dependencies import PaginationDep, PostServiceDep
+from app.api.dependencies import CursorPaginationDep, PaginationDep, PostServiceDep
 from app.api.rate_limit import RateLimiter
 from app.cache_key_builders import post_key_builder, post_list_key_builder
 from app.config import settings
@@ -41,14 +40,12 @@ async def get_posts_offset(posts: PostServiceDep, pagination: PaginationDep):
 @cache(expire=30, namespace="post_list_cursor", key_builder=post_list_key_builder)
 async def get_post_cursor(
     posts: PostServiceDep,
-    limit: int,
-    created_at: datetime | None = None,
-    cursor_id: uuid.UUID | None = None,
+    cursor_pagination: CursorPaginationDep,
 ):
     return await posts.get_posts_with_cursor(
-        limit=limit,
-        created_at=created_at,
-        cursor_id=cursor_id,
+        limit=cursor_pagination.limit,
+        created_at=cursor_pagination.created_at,
+        cursor_id=cursor_pagination.cursor_id,
     )
 
 
