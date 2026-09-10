@@ -40,10 +40,7 @@ class PostRepository:
         )
 
     async def get_posts_with_cursor(
-        self,
-        limit: int,
-        cursor_id: UUID | None,
-        created_at: datetime | None
+        self, limit: int, cursor_id: UUID | None, created_at: datetime | None
     ) -> PostReadSchemaWithCursor:
         # запрашиваем на одну запись больше, чтобы понять, есть ли следующая страница
         stmt = select(Post).order_by(Post.created_at.desc(), Post.id.desc()).limit(limit + 1)

@@ -38,10 +38,26 @@ async def test_get_posts_by_cursor_with_no_has_more(db: UnitOfWork):
 
 
 async def test_get_posts_by_cursor_with_no_result(db: UnitOfWork):
-    res = await db.posts.get_posts_with_cursor(0, None, None)
-    assert res.model_dump()["next_cursor"] is None
+    res = await db.posts.get_posts_with_cursor(5, None, None)
+    last_id = res.model_dump()["posts"][-1]["id"]
+    last_created_at = res.model_dump()["posts"][-1]["created_at"]
+
+    assert res.model_dump()["next_cursor"]["last_id"] == last_id
+
+    res = await db.posts.get_posts_with_cursor(5, last_id, last_created_at)
+    assert res.model_dump()["has_more"] is False
+    assert res.model_dump()["posts"] == []
 
     assert isinstance(res, PostReadSchemaWithCursor)
+
+
+async def test_tie_break_by_cursor(db: UnitOfWork):
+    page_1_res = await db.posts.get_posts_with_cursor(2, None, None)
+    page_1_last_id = page_1_res.model_dump()["posts"][-1]["id"]
+    page_1_last_created_at = page_1_res.model_dump()["posts"][-1]["created_at"]
+
+    page_2_res = await db.posts.get_posts_with_cursor(2, page_1_last_id, page_1_last_created_at)
+    assert page_2_res.model_dump()["posts"] != page_1_res.model_dump()["posts"]
 
 
 async def test_get_post_by_uuid(db: UnitOfWork):
