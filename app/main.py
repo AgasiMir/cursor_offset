@@ -26,7 +26,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(lifespan=lifespan, title="Cursor Offset API", version="1.0")
 
-# app.middleware("http")(log_requests)
+app.middleware("http")(log_requests)
 
 app.include_router(handlers_router)
 

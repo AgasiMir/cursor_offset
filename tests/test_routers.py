@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import uuid4
 
 from app.schemas import PostReadSchema, PostReadSchemaWithCursor, PostReadSchemaWithPagination
@@ -44,6 +45,26 @@ async def test_get_posts_by_cursor_with_has_more_is_false(async_client):
     )
     assert res.status_code == 200
     assert res.json().get("has_more") is False
+
+
+async def test_get_posts_by_cursor_with_cursor_id_and_no_created_at(async_client):
+    res = await async_client.get(
+        "/v1/posts/cursor",
+        params={"limit": 5, "cursor_id": uuid4()},
+    )
+    assert res.status_code == 422
+    err_msg = res.json().get("detail")[0].get("msg")
+    assert err_msg == "Value error, created_at must be provided if cursor_id is provided"
+
+
+async def test_get_posts_by_cursor_with_created_at_and_no_cursor_id(async_client):
+    res = await async_client.get(
+        "/v1/posts/cursor",
+        params={"limit": 5, "created_at": datetime.now()},
+    )
+    assert res.status_code == 422
+    err_msg = res.json().get("detail")[0].get("msg")
+    assert err_msg == "Value error, cursor_id must be provided if created_at is provided"
 
 
 async def test_get_post_by_uuid(async_client, db: UnitOfWork):
