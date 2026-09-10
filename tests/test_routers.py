@@ -87,6 +87,17 @@ async def test_get_not_existing_post_by_uuid(async_client):
     assert res.json().get("message") == "Post Not Found."
 
 
+async def test_get_post_by_incorrect_id(async_client):
+    post_id = 231
+
+    res = await async_client.get(
+        f"/v1/posts/{post_id}",
+    )
+    assert res.status_code == 422
+    err_msg = res.json()["detail"][0].get("msg")
+    assert "nput should be a valid UUID" in err_msg
+
+
 async def test_create_post(async_client):
     res = await async_client.post(
         "/v1/posts",

@@ -90,6 +90,10 @@ async def test_post_read(
     [
         param("post number: 1", None, does_not_raise(), id="correct_title"),
         param("post number: 2", "Post_Content", does_not_raise(), id="correct_title_and_content"),
+        param("1234" * 30, "Post_Content", does_not_raise(), id="max_length_title"),
+        param("1", "Post_Content", does_not_raise(), id="min_length_title"),
+        param("", "Post_Content", raises(ValidationError), id="too_short_title"),
+        param("1234" * 31, None, raises(ValidationError), id="too_long_title"),
         param([], "Post_Content", raises(ValidationError), id="list_as_title"),
         param(None, "Post_Content", raises(ValidationError), id="none_as_title"),
         param([], {}, raises(ValidationError), id="incorrect_title_and_content"),
