@@ -1,8 +1,6 @@
 from datetime import datetime
 from uuid import UUID
 
-from app.init import redis_manager
-from app.middlewares.log import logger
 from app.schemas import (
     Pagination,
     PostCreateSchema,
@@ -12,6 +10,7 @@ from app.schemas import (
     PostReadSchemaWithPagination,
 )
 from app.uow import UnitOfWork
+from app.utils.cache_invalidation import delete_cache_key
 
 
 class PostService:
@@ -48,15 +47,11 @@ class PostService:
     ) -> PostReadSchema:
         res = await self.uow.posts.partial_update_post(post_id=post_id, post=post)
 
-        key = f"fastapi-cache:post:{post_id}"
-        deleted_count = await redis_manager.delete(key)
-        logger.info(f"Удален ключ кэша для поста {post_id}: {deleted_count}")
+        await delete_cache_key(post_id=post_id, entity_name="post")
 
         return res
 
     async def delete_post(self, post_id: UUID) -> None:
         await self.uow.posts.delete_post(post_id)
 
-        key = f"fastapi-cache:post:{post_id}"
-        deleted_count = await redis_manager.delete(key)
-        logger.info(f"Удален ключ кэша для поста {post_id}: {deleted_count}")
+        await delete_cache_key(post_id=post_id, entity_name="post")
