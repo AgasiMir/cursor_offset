@@ -3,7 +3,12 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.utils.pagination import Pagination
+# from app.utils.pagination import Pagination
+
+
+class Pagination(BaseModel):
+    page: int = Field(ge=1, description="Номер страницы")
+    page_size: int = Field(default=5, ge=1, le=50, description="Количество постов на странице")
 
 
 class PostReadSchema(BaseModel):

@@ -4,6 +4,7 @@ from uuid import UUID
 from app.init import redis_manager
 from app.middlewares.log import logger
 from app.schemas import (
+    Pagination,
     PostCreateSchema,
     PostPartialUpdateSchema,
     PostReadSchema,
@@ -11,7 +12,6 @@ from app.schemas import (
     PostReadSchemaWithPagination,
 )
 from app.uow import UnitOfWork
-from app.utils.pagination import Pagination
 
 
 class PostService:

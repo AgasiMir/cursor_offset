@@ -6,8 +6,7 @@ from uuid import UUID, uuid4
 from pydantic import ValidationError
 from pytest import mark, param, raises
 
-from app.schemas import PostCreateSchema, PostReadSchema
-from app.utils.pagination import Pagination
+from app.schemas import Pagination, PostCreateSchema, PostReadSchema
 
 
 @mark.parametrize(
