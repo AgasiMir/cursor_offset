@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 import pytest
+from pydantic import ValidationError
 
 from app.exception_handlers.python_exceptions import PostNotFoundException
 from app.schemas import (
@@ -65,6 +66,12 @@ async def test_post_create(db: UnitOfWork):
 
     res = await db.posts.create_post(post_data)
     assert isinstance(res, PostReadSchema)
+
+
+async def test_post_create_with_invalid_data(db: UnitOfWork):
+
+    with pytest.raises(ValidationError):
+        await db.posts.create_post(PostCreateSchema(title=None))  # type: ignore[arg-type]
 
 
 async def test_post_partial_update(db: UnitOfWork):
