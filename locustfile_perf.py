@@ -33,7 +33,9 @@ import os
 
 from locust import HttpUser, LoadTestShape, tag, task
 
-from app.config import settings
+from app.config import get_settings
+
+settings = get_settings()
 
 assert settings.ENVIRONMENT == "LOCUST"
 

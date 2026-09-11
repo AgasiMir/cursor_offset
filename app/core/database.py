@@ -2,7 +2,9 @@ from sqlalchemy import MetaData, NullPool
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
-from app.config import settings
+from app.config import get_settings
+
+settings = get_settings()
 
 async_engine = create_async_engine(
     url=settings.DB_URL,
