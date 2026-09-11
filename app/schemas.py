@@ -5,6 +5,17 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class Pagination(BaseModel):
+    """
+    Схема пагинации для запросов с поддержкой постраничной навигации.
+
+    Используется для разделения списков сущностей (например, постов)
+    на страницы с настраиваемым номером и размером страницы.
+
+    Attributes:
+        page: Номер страницы (начиная с 1). По умолчанию — 1.
+        page_size: Количество записей на странице. По умолчанию — 5,
+            допустимый диапазон: от 1 до 50.
+    """
     page: int = Field(default=1, ge=1, description="Номер страницы")
     page_size: int = Field(default=5, ge=1, le=50, description="Количество постов на странице")
 
