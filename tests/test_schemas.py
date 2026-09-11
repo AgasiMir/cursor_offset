@@ -70,7 +70,7 @@ from app.schemas import CursorPaginationSchema, Pagination, PostCreateSchema, Po
         ),
     ],
 )
-async def test_post_read(
+async def test_post_read_schema(
     id: UUID,
     title: str,
     content: str | None,
@@ -92,14 +92,19 @@ async def test_post_read(
         param("post number: 2", "Post_Content", does_not_raise(), id="correct_title_and_content"),
         param("1234" * 30, "Post_Content", does_not_raise(), id="max_length_title"),
         param("1", "Post_Content", does_not_raise(), id="min_length_title"),
+        param(" " * 5, "Post_Content", raises(ValidationError), id="empty_string"),
         param("", "Post_Content", raises(ValidationError), id="too_short_title"),
         param("1234" * 31, None, raises(ValidationError), id="too_long_title"),
-        param([], "Post_Content", raises(ValidationError), id="list_as_title"),
-        param(None, "Post_Content", raises(ValidationError), id="none_as_title"),
-        param([], {}, raises(ValidationError), id="incorrect_title_and_content"),
+        param([], "Post_Content", raises(TypeError), id="list_as_title"),
+        param(None, "Post_Content", raises(TypeError), id="none_as_title"),
+        param([], {}, raises(TypeError), id="incorrect_title_and_content"),
     ],
 )
-async def test_post_create(title: str, content: str | None, exc: AbstractContextManager[object]):
+async def test_post_create_schema(
+    title: str,
+    content: str | None,
+    exc: AbstractContextManager[object],
+):
     with exc:
         PostCreateSchema(title=title, content=content)
 
