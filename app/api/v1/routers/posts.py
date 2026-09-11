@@ -7,7 +7,7 @@ from pyrate_limiter import Duration, Limiter, Rate
 from app.api.dependencies import CursorPaginationDep, PaginationDep, PostServiceDep
 from app.api.rate_limit import RateLimiter
 from app.cache_key_builders import post_key_builder, post_list_key_builder
-from app.config import settings
+from app.config import get_settings
 from app.exception_handlers.schemas import ErrorResponse
 from app.schemas import (
     PostCreateSchema,
@@ -16,6 +16,8 @@ from app.schemas import (
     PostReadSchemaWithCursor,
     PostReadSchemaWithPagination,
 )
+
+settings = get_settings()
 
 # В тестовой среде (ENVIRONMENT=TEST) лимитер не подключается, чтобы не мешать тестам.
 # Это надёжнее, чем мокать RateLimiter через import-order/sys.modules — хрупко.

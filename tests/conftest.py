@@ -20,12 +20,14 @@ from fastapi_cache.backends.inmemory import InMemoryBackend
 from httpx import ASGITransport, AsyncClient
 
 from app.api.dependencies import get_db
-from app.config import settings
+from app.config import get_settings
 from app.core.database import Base, async_session_null_pool, engine_null_pull
 from app.main import app
 from app.models.post import Post
 from app.schemas import PostCreateSchema
 from app.uow import UnitOfWork
+
+settings = get_settings()
 
 # Инициализация FastAPICache без Redis (in-memory backend).
 # Нужно, чтобы FastAPICache.get_prefix() не падал с "You must call init first!"
